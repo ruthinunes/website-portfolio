@@ -1,3 +1,4 @@
+// open menu mobile
 const displayMenu = () => {
   const navMenu = document.getElementById("nav-menu");
   const openButton = document.getElementById("nav-toggle");
@@ -9,6 +10,7 @@ const displayMenu = () => {
   });
 };
 
+// remove menu mobile
 const removeMenu = (navMenu) => {
   const closeButton = document.getElementById("nav-close");
 
@@ -94,9 +96,9 @@ const displayModals = () => {
   const modals = document.querySelectorAll(".services__modal");
   const openButtons = document.querySelectorAll(".services__button");
 
-  openButtons.forEach((button, i) => {
+  openButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
-      addClass(modals[i], "active-modal");
+      addClass(modals[index], "active-modal");
     });
   });
   removeModals(modals);
@@ -104,9 +106,9 @@ const displayModals = () => {
 
 const removeModals = (modals) => {
   const closeButtons = document.querySelectorAll(".services__modal-close");
-  closeButtons.forEach((button, i) => {
+  closeButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
-      removeClass(modals[i], "active-modal");
+      removeClass(modals[index], "active-modal");
     });
   });
 };
@@ -149,7 +151,65 @@ const swiperTestimonial = () => {
   });
 };
 
-// dark mode
+// add header shadow when scroll
+const scrollHeader = () => {
+  const nav = document.getElementById("header");
+  const scrollPosition = window.scrollY;
+
+  if (scrollPosition >= 100) {
+    addClass(nav, "scroll-header");
+  } else {
+    removeClass(nav, "scroll-header");
+  }
+};
+
+// active nav section link when scroll
+const activeNavLink = () => {
+  const { sections, scrollY } = getSectionsAndScrollHeight();
+
+  sections.forEach((current) => {
+    const sectionId = current.getAttribute("id");
+    const isActive = isSectionActive(current, scrollY);
+    toggleActiveClass(sectionId, isActive);
+  });
+};
+
+const getSectionsAndScrollHeight = () => {
+  const sections = document.querySelectorAll("section[id]");
+  const scrollY = window.scrollY;
+
+  return { sections, scrollY };
+};
+
+const isSectionActive = (current, scrollY) => {
+  const sectionHeight = current.offsetHeight;
+  const sectionTop = current.offsetTop - 50;
+  return scrollY > sectionTop && scrollY <= sectionTop + sectionHeight;
+};
+
+const toggleActiveClass = (sectionId, isActive) => {
+  const link = document.querySelector(".nav__menu a[href*=" + sectionId + "]");
+
+  if (isActive) {
+    addClass(link, "active-link");
+  } else {
+    removeClass(link, "active-link");
+  }
+};
+
+// display scroll up page button
+const scrollUpPage = () => {
+  const scrollUp = document.getElementById("scroll-up");
+  const scrollY = window.scrollY;
+
+  if (scrollY >= 460) {
+    addClass(scrollUp, "show-scroll");
+  } else {
+    removeClass(scrollUp, "show-scroll");
+  }
+};
+
+// theme
 const setThemeBasedOnSystem = () => {
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
@@ -174,7 +234,6 @@ const changeTheme = () => {
   });
 };
 
-// reusable functions
 const changeThemeIcon = (isDark) => {
   const themeButton = document.getElementById("theme-button");
 
@@ -185,6 +244,7 @@ const changeThemeIcon = (isDark) => {
   }
 };
 
+// reusable functions
 const addClass = (element, className) => {
   element.classList.add(className);
 };
@@ -206,4 +266,10 @@ window.addEventListener("DOMContentLoaded", () => {
   swiperTestimonial();
   changeTheme();
   setThemeBasedOnSystem();
+});
+
+window.addEventListener("scroll", () => {
+  scrollHeader();
+  activeNavLink();
+  scrollUpPage();
 });

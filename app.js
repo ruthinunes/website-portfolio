@@ -1,101 +1,114 @@
-// menu show and hidde
-const showHiddeMenu = () => {
+// open menu mobile
+const displayMenu = () => {
   const navMenu = document.getElementById("nav-menu");
-  const navToggle = document.getElementById("nav-toggle");
-  const navClose = document.getElementById("nav-close");
+  const openButton = document.getElementById("nav-toggle");
 
-  if (navToggle) {
-    navToggle.addEventListener("click", () => {
-      addClassList(navMenu, "show-menu");
-    });
-  }
-
-  if (navClose) {
-    navClose.addEventListener("click", () => {
-      removeClassList(navMenu, "show-menu");
-    });
-  }
-}; //ok
+  openButton.addEventListener("click", () => {
+    addClass(navMenu, "show-menu");
+    removeMenu(navMenu);
+    removeMenuOnClick(navMenu);
+  });
+};
 
 // remove menu mobile
-const removeMenuMobile = () => {
-  const navlink = document.querySelectorAll(".nav__link");
-  const navMenu = document.getElementById("nav-menu");
+const removeMenu = (navMenu) => {
+  const closeButton = document.getElementById("nav-close");
 
-  navlink.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      removeClassList(navMenu, "show-menu");
-    });
+  closeButton.addEventListener("click", () => {
+    removeClass(navMenu, "show-menu");
   });
-}; //ok
+};
 
-// accordion skills
-const showSkills = () => {
-  const skillsHeader = document.querySelectorAll(".skills__header");
+// remove menu when a nav link is clicked
+const removeMenuOnClick = (navMenu) => {
+  const navlinks = document.querySelectorAll(".nav__link");
 
-  skillsHeader.forEach((header) => {
-    header.addEventListener("click", toggleSkills);
-  });
-};//ok
-
-const toggleSkills = (event) => {
-  const skillsContent = document.querySelectorAll(".skills__content");
-  let itemClass = event.currentTarget.parentNode.className;
-
-  skillsContent.forEach((content) => {
-    content.className = "skills__content skills__close";
-  });
-  if (itemClass === "skills__content skills__close") {
-    event.currentTarget.parentNode.className = "skills__content skills__open";
-  }
-};//ok
-
-// qualification tabs
-const showQualifications = () => {
-  const buttons = document.querySelectorAll(".qualification__button");
-  const contents = document.querySelectorAll(".qualification__content");
-
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-target");
-
-      contents.forEach((content) => {
-        const contentId = content.getAttribute("data-id");
-
-        if (contentId === target) {
-          addClassList(content, "qualification__active");
-        } else {
-          removeClassList(content, "qualification__active");
-        }
-      });
-
-      // Activate/desactivate class on button
-      buttons.forEach((button) => {
-        if (button === btn) {
-          addClassList(button, "qualification__active");
-        } else {
-          removeClassList(button, "qualification__active");
-        }
-      });
+  navlinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      removeClass(navMenu, "show-menu");
     });
   });
 };
 
-// service modal
-const showHiddeModals = () => {
-  const modals = document.querySelectorAll(".services__modal");
-  const openBtns = document.querySelectorAll(".services__button");
-  const closeBtns = document.querySelectorAll(".services__modal-close");
+// skills
+const setSkillsClick = () => {
+  const skillsHeader = document.querySelectorAll(".skills__header");
 
-  openBtns.forEach((btn, i) => {
-    btn.addEventListener("click", () => {
-      addClassList(modals[i], "active-modal");
-    });
+  skillsHeader.forEach((header) => {
+    header.addEventListener("click", displaySkills);
+  });
+};
+
+const displaySkills = (e) => {
+  const skillsContent = document.querySelectorAll(".skills__content");
+  const closeClass = "skills__content skills__close";
+  const openClass = "skills__content skills__open";
+  let itemClass = e.currentTarget.parentNode.className;
+
+  skillsContent.forEach((content) => {
+    content.className = closeClass;
   });
 
-  closeBtns.forEach((btn, i) => {
-    btn.addEventListener("click", () => {
-      removeClassList(modals[i], "active-modal");
+  if (itemClass === closeClass) {
+    e.currentTarget.parentNode.className = openClass;
+  }
+};
+
+// qualification tabs
+const setQualificationsClick = () => {
+  const tabButtons = document.querySelectorAll(".qualification__button");
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      displayQualifications(tabButtons, button);
+    });
+  });
+};
+
+const displayQualifications = (buttons, selectedButton) => {
+  const contents = document.querySelectorAll(".qualification__content");
+  const selectedTarget = selectedButton.getAttribute("data-target");
+
+  contents.forEach((content) => {
+    const contentId = content.getAttribute("data-id");
+
+    toggleVisibility(contentId === selectedTarget, content);
+  });
+  toggleButton(buttons, selectedButton);
+};
+
+const toggleButton = (buttons, selectedButton) => {
+  buttons.forEach((button) => {
+    toggleVisibility(button === selectedButton, button);
+  });
+};
+
+const toggleVisibility = (condition, element) => {
+  if (condition) {
+    addClass(element, "qualification__active");
+  } else {
+    removeClass(element, "qualification__active");
+  }
+};
+
+// service modal
+const displayModals = () => {
+  const modals = document.querySelectorAll(".services__modal");
+  const openButtons = document.querySelectorAll(".services__button");
+
+  openButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      addClass(modals[index], "active-modal");
+    });
+  });
+  removeModals(modals);
+};
+
+const removeModals = (modals) => {
+  const closeButtons = document.querySelectorAll(".services__modal-close");
+  closeButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      removeClass(modals[index], "active-modal");
     });
   });
 };
@@ -138,53 +151,76 @@ const swiperTestimonial = () => {
   });
 };
 
-// change background header
+// add header shadow when scroll
 const scrollHeader = () => {
   const nav = document.getElementById("header");
   const scrollPosition = window.scrollY;
 
-  if (scrollPosition >= 80) {
-    addClassList(nav, "scroll-header");
+  if (scrollPosition >= 100) {
+    addClass(nav, "scroll-header");
   } else {
-    removeClassList(nav, "scroll-header");
+    removeClass(nav, "scroll-header");
   }
 };
 
-// scroll sections active link
-const scrollActive = () => {
-  const sections = document.querySelectorAll("section[id]");
-  const scrollY = window.pageYOffset;
+// active nav section link when scroll
+const activeNavLink = () => {
+  const { sections, scrollY } = getSectionsAndScrollHeight();
 
   sections.forEach((current) => {
-    const sectionHeight = current.offsetHeight;
-    const sectionTop = current.offsetTop - 50;
-    let sectionId = current.getAttribute("id");
-
-    if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-      document
-        .querySelector(".nav__menu a[href*=" + sectionId + "]")
-        .classList.add("active-link");
-    } else {
-      document
-        .querySelector(".nav__menu a[href*=" + sectionId + "]")
-        .classList.remove("active-link");
-    }
+    const sectionId = current.getAttribute("id");
+    const isActive = isSectionActive(current, scrollY);
+    toggleActiveClass(sectionId, isActive);
   });
 };
 
-// show scroll up
-const scrollUp = () => {
-  const scrollUp = document.getElementById("scroll-up");
-  const scrollY = window.pageYOffset;
+const getSectionsAndScrollHeight = () => {
+  const sections = document.querySelectorAll("section[id]");
+  const scrollY = window.scrollY;
 
-  if (scrollY >= 560) {
-    addClassList(scrollUp, "show-scroll");
+  return { sections, scrollY };
+};
+
+const isSectionActive = (current, scrollY) => {
+  const sectionHeight = current.offsetHeight;
+  const sectionTop = current.offsetTop - 50;
+  return scrollY > sectionTop && scrollY <= sectionTop + sectionHeight;
+};
+
+const toggleActiveClass = (sectionId, isActive) => {
+  const link = document.querySelector(".nav__menu a[href*=" + sectionId + "]");
+
+  if (isActive) {
+    addClass(link, "active-link");
   } else {
-    removeClassList(scrollUp, "show-scroll");
+    removeClass(link, "active-link");
   }
 };
 
-// dark/light theme
+// display scroll up page button
+const scrollUpPage = () => {
+  const scrollUp = document.getElementById("scroll-up");
+  const scrollY = window.scrollY;
+
+  if (scrollY >= 460) {
+    addClass(scrollUp, "show-scroll");
+  } else {
+    removeClass(scrollUp, "show-scroll");
+  }
+};
+
+// theme
+const setThemeBasedOnSystem = () => {
+  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  if (!isDarkMode) {
+    removeClass(document.documentElement, "dark-theme");
+  }
+
+  addClass(document.documentElement, "dark-theme");
+  changeThemeIcon(isDarkMode);
+};
+
 const changeTheme = () => {
   const themeButton = document.getElementById("theme-button");
 
@@ -194,48 +230,46 @@ const changeTheme = () => {
     const isDarkTheme =
       document.documentElement.classList.contains("dark-theme");
 
-    if (isDarkTheme) {
-      themeButton.classList.replace("fa-moon", "fa-sun");
-    } else {
-      themeButton.classList.replace("fa-sun", "fa-moon");
-    }
+    changeThemeIcon(isDarkTheme);
   });
 };
 
-const setThemeBasedOnSystem = () => {
+const changeThemeIcon = (isDark) => {
   const themeButton = document.getElementById("theme-button");
-  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  if (!isDarkMode) {
-    themeButton.classList.replace("fa-sun", "fa-moon");
-    removeClassList(document.documentElement, "dark-theme");
+  if (isDark) {
+    replaceClass(themeButton, "fa-moon", "fa-sun");
+  } else {
+    replaceClass(themeButton, "fa-sun", "fa-moon");
   }
-  themeButton.classList.replace("fa-moon", "fa-sun");
-  addClassList(document.documentElement, "dark-theme");
-};//ok
+};
 
-const addClassList = (element, className) => {
+// reusable functions
+const addClass = (element, className) => {
   element.classList.add(className);
-};//ok
+};
 
-const removeClassList = (element, className) => {
+const removeClass = (element, className) => {
   element.classList.remove(className);
 };
-// events
+
+const replaceClass = (element, currentClass, newClass) => {
+  element.classList.replace(currentClass, newClass);
+};
+
 window.addEventListener("DOMContentLoaded", () => {
-  setThemeBasedOnSystem();//ok
-  changeTheme();//ok
-  showHiddeMenu();//ok
-  removeMenuMobile(); //ok
-  showSkills();
-  showQualifications();
-  showHiddeModals();
+  displayMenu();
+  setSkillsClick();
+  setQualificationsClick();
+  displayModals();
   swiperPortfolio();
   swiperTestimonial();
+  changeTheme();
+  setThemeBasedOnSystem();
 });
 
 window.addEventListener("scroll", () => {
   scrollHeader();
-  scrollActive();
-  scrollUp();
+  activeNavLink();
+  scrollUpPage();
 });
